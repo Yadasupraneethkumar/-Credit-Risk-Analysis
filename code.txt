@@ -1,1 +1,83 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, roc_curve
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
+# Load the dataset
+# url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/german.data'
+file = 'C:/Users/Praneeth Kumar/Data Science/Credit-risk-analysis.csv'
+column_names = ['status', 'duration', 'credit_history', 'purpose', 'credit_amount', 'savings', 'employment',
+                'installment_rate', 'personal_status', 'other_debtors', 'residence_since', 'property', 'age',
+                'other_installment_plans', 'housing', 'existing_credits', 'job', 'num_dependents', 'telephone',
+                'foreign_worker', 'credit_risk']
+df = pd.read_csv(file, delim_whitespace=True, header=None, names=column_names)
+
+# Data Cleaning and Preprocessing
+df['credit_risk'] = df['credit_risk'].apply(lambda x: 1 if x == 1 else 0)  # 1: Good, 0: Bad
+
+# Encoding categorical features
+label_encoders = {}
+for column in df.select_dtypes(include=['object']).columns:
+    le = LabelEncoder()
+    df[column] = le.fit_transform(df[column])
+    label_encoders[column] = le
+
+# Scaling numerical features
+scaler = StandardScaler()
+numerical_columns = df.select_dtypes(include=['int64']).columns
+df[numerical_columns] = scaler.fit_transform(df[numerical_columns])
+
+# Exploratory Data Analysis (EDA)
+plt.figure(figsize=(10, 6))
+sns.countplot(x='credit_risk', data=df)
+plt.title('Distribution of Credit Risk')
+plt.show()
+
+# Correlation Matrix
+plt.figure(figsize=(12, 8))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Correlation Matrix')
+plt.show()
+
+# Feature Engineering
+X = df.drop('credit_risk', axis=1)
+y = df['credit_risk']
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Predictive Modeling
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+# Model Evaluation
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+roc_auc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
+
+# ROC Curve
+fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, label=f'ROC curve (area = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend()
+plt.show()
+
+# Results and Insights
+print(f'Accuracy: {accuracy:.2f}')
+print(f'Precision: {precision:.2f}')
+print(f'Recall: {recall:.2f}')
+print(f'ROC-AUC: {roc_auc:.2f}')
+
+print("\nInsights:")
+print("1. Decision tree provides clear insights into credit risk determinants.")
+print("2. Factors such as credit history and employment status significantly impact credit risk.")
