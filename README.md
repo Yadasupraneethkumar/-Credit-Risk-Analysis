@@ -4,25 +4,23 @@ The goal of this project is to analyze a dataset of financial information to pre
 Dataset
 The dataset is sourced from Kaggle's Credit Risk dataset.
 
-Project Steps
-Data Collection
+Data Acquisition
+Downloaded and imported data from the UCI Machine Learning Repository, ensuring the dataset's integrity.
 
-Load the dataset from Kaggle.
-Data Cleaning and Preprocessing
+Data Understanding
+Analyzed dataset structure, identifying key financial features influencing credit risk.
 
-Handling missing values, encode categorical variables, and ensure data consistency.
-Exploratory Data Analysis (EDA)
+Data Transformation
+Converted categorical variables to numerical format using label encoding for effective model input.
 
-Visualizing key features and their relationships with credit risk.
-Feature Engineering
+Data Normalization
+Standardized numerical features to ensure uniform scaling, enhancing model accuracy.
 
-Preparing features for modeling, including normalization and encoding.
-Predictive Modeling
+Model Selection and Training
+Chose a decision tree classifier based on its interpretability and trained it with financial data.
 
-Using a decision tree classifier to predict credit risk.
-Model Evaluation
+Validation and Tuning
+Used cross-validation to fine-tune model parameters, optimizing predictive performance.
 
-Evaluating the model's performance using accuracy, precision, recall, and ROC-AUC.
-Results and Insights
-
-Summarization of findings and implications for financial risk management.
+Interpretation of Results
+Analyzed decision tree outputs to extract rules and insights on customer creditworthiness.
